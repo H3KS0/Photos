@@ -1,30 +1,24 @@
-name: Django CI
+name: Print workflow #Название workflow
+on: workflow_dispatch #Триггер, который будет вызывать workflow
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+jobs: #Начало секции джобов
 
-jobs:
-  build:
+  print_hello: #Начало секции первой джобы
+    runs-on: ubuntu-latest #Среда выполнения джоба
+    steps: #Начало секции шагов
+      - name: Print hello #Название шага
+        run: echo "Hello world!" #Команда, которая будет выполнена в терминале
 
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: [3.7, 3.8, 3.9]
+  print_full_technical_info: #Начало секции второй джобы
+       needs: print_hello  
+    runs-on: ubuntu-latest #Среда выполнения джоба
+    steps: #Начало секции шагов
+      - name: Print full_tech_info #Название шага
+        run: sudo lshw #Команда, которая будет выполнена в терминале
 
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: Run Tests
-      run: |
-        python manage.py test
+  print_short_technical_info: #Начало секции третий джобы
+    needs: print_full_technical_info   
+    runs-on: ubuntu-latest #Среда выполнения джоба
+    steps: #Начало секции шагов
+      - name: Print short_tech_info #Название шага
+        run: sudo lshw -short #Команда, которая будет выполнена в терминале
